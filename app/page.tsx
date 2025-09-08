@@ -8,10 +8,23 @@ import { redirect } from "next/navigation";
 
 export default function Home() {
   const [user, setUser] = useState<User>({ email: "", password: "", name: "" });
+  const [isAuth, setIsAuth] = useState<any>(false);
   const updateUser = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setUser({ ...user!, [id]: value });
   };
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const userData = await account.get();
+        setIsAuth(userData);
+      } catch (error) {
+        console.error("Error fetching account:", error);
+      }
+    };
+    getUser();
+  }, []);
+  if (isAuth) redirect('/profile')
   return (
     <>
       <input
